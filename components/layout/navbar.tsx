@@ -1,0 +1,161 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { Search, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { name: "Home", path: "/" },
+  { name: "Explore", path: "/explore" },
+  { name: "Upcoming", path: "/upcoming" },
+];
+
+export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const pathname = usePathname();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(
+        searchQuery.trim()
+      )}`;
+    }
+  };
+
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-sm">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center space-x-2">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <span className="text-2xl font-bold">AniPlay</span>
+            </motion.div>
+          </Link>
+
+          <nav className="hidden md:flex items-center space-x-6">
+            {navItems.map((item) => {
+              const isActive = pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    isActive ? "text-primary" : "text-muted-foreground"
+                  )}
+                >
+                  <motion.div
+                    whileHover={{ y: -2 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    {item.name}
+                  </motion.div>
+                  {isActive && (
+                    <motion.div
+                      className="h-0.5 bg-primary mt-0.5"
+                      layoutId="navbar-indicator"
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <form
+            onSubmit={handleSearch}
+            className="relative hidden md:flex items-center"
+          >
+            <Input
+              type="search"
+              placeholder="Search anime..."
+              className="w-[200px] lg:w-[300px] pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+          </form>
+
+          <ThemeToggle />
+
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle Menu"
+            className="md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="fixed inset-0 z-50 bg-background pt-16"
+        >
+          <div className="container py-6">
+            <div className="flex justify-end">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Close Menu"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+
+            <form onSubmit={handleSearch} className="relative my-6">
+              <Input
+                type="search"
+                placeholder="Search anime..."
+                className="w-full pl-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            </form>
+
+            <nav className="flex flex-col space-y-6">
+              {navItems.map((item) => {
+                const isActive = pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    href={item.path}
+                    className={cn(
+                      "text-lg font-medium transition-colors",
+                      isActive ? "text-primary" : "text-muted-foreground"
+                    )}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </motion.div>
+      )}
+    </header>
+  );
+}
