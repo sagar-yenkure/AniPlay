@@ -6,18 +6,18 @@ import { motion } from "framer-motion";
 import { Search, X, Filter, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
   Popover,
@@ -26,7 +26,13 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { SEASONS, FORMATS, STATUSES, SORT_OPTIONS, YEAR_RANGE } from "@/lib/constants";
+import {
+  SEASONS,
+  FORMATS,
+  STATUSES,
+  SORT_OPTIONS,
+  YEAR_RANGE,
+} from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 interface FilterSidebarProps {
@@ -40,7 +46,9 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
   const searchParams = useSearchParams();
 
   // Initialize filters from URL parameters
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || ""
+  );
   const [selectedGenres, setSelectedGenres] = useState<string[]>(
     searchParams.get("genres")?.split(",") || []
   );
@@ -48,29 +56,30 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
   const [year, setYear] = useState(searchParams.get("year") || "");
   const [format, setFormat] = useState(searchParams.get("format") || "");
   const [status, setStatus] = useState(searchParams.get("status") || "");
-  const [sort, setSort] = useState(searchParams.get("sort") || "POPULARITY_DESC");
+  const [sort, setSort] = useState(
+    searchParams.get("sort") || "POPULARITY_DESC"
+  );
 
   // Handle genre selection
   const handleGenreChange = (genre: string) => {
     setSelectedGenres((prev) =>
-      prev.includes(genre)
-        ? prev.filter((g) => g !== genre)
-        : [...prev, genre]
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
     );
   };
 
   // Handle filter submit
   const applyFilters = () => {
     const params = new URLSearchParams();
-    
+
     if (searchQuery) params.append("search", searchQuery);
-    if (selectedGenres.length > 0) params.append("genres", selectedGenres.join(","));
+    if (selectedGenres.length > 0)
+      params.append("genres", selectedGenres.join(","));
     if (season) params.append("season", season);
     if (year) params.append("year", year);
     if (format) params.append("format", format);
     if (status) params.append("status", status);
     if (sort) params.append("sort", sort);
-    
+
     router.push(`/explore?${params.toString()}`);
     onClose();
   };
@@ -90,7 +99,11 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.getElementById("filter-sidebar");
-      if (sidebar && !sidebar.contains(event.target as Node) && window.innerWidth >= 768) {
+      if (
+        sidebar &&
+        !sidebar.contains(event.target as Node) &&
+        window.innerWidth >= 768
+      ) {
         onClose();
       }
     };
@@ -110,17 +123,17 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
     <>
       {/* Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
           onClick={onClose}
         />
       )}
-      
+
       {/* Sidebar */}
       <motion.div
         id="filter-sidebar"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-full max-w-xs flex-col border-r bg-background p-6 shadow-lg md:z-0 md:flex md:translate-x-0 md:border-0 md:shadow-none",
+          "fixed inset-y-0 left-0 z-40 w-full max-w-xs flex-col border-r bg-background p-6 shadow-lg md:z-40 md:flex md:translate-x-0 md:border-0 md:shadow-none",
           isOpen ? "flex" : "hidden"
         )}
         initial={{ x: -320 }}
@@ -129,12 +142,17 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
       >
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Filters</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="md:hidden"
+          >
             <X className="h-5 w-5" />
           </Button>
         </div>
-        
-        <div className="mt-4 space-y-4">
+
+        <div className="mt-12 space-y-4">
           {/* Search */}
           <div>
             <Label htmlFor="search">Search</Label>
@@ -150,7 +168,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
               />
             </div>
           </div>
-          
+
           {/* Sort */}
           <div>
             <Label htmlFor="sort">Sort By</Label>
@@ -167,7 +185,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
               </SelectContent>
             </Select>
           </div>
-          
+
           <Accordion type="single" collapsible className="w-full">
             {/* Season & Year */}
             <AccordionItem value="season">
@@ -186,7 +204,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={year} onValueChange={setYear}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select year" />
@@ -202,7 +220,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                 </Select>
               </AccordionContent>
             </AccordionItem>
-            
+
             {/* Format */}
             <AccordionItem value="format">
               <AccordionTrigger>Format</AccordionTrigger>
@@ -222,7 +240,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                 </Select>
               </AccordionContent>
             </AccordionItem>
-            
+
             {/* Status */}
             <AccordionItem value="status">
               <AccordionTrigger>Status</AccordionTrigger>
@@ -242,14 +260,14 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                 </Select>
               </AccordionContent>
             </AccordionItem>
-            
+
             {/* Genres */}
             <AccordionItem value="genres">
               <AccordionTrigger>Genres</AccordionTrigger>
               <AccordionContent>
                 <div className="max-h-48 overflow-y-auto pr-1">
                   <div className="flex flex-wrap gap-2">
-                    {genres.map((genre) => (
+                    {genres?.map((genre) => (
                       <div
                         key={genre}
                         className={cn(
@@ -272,10 +290,12 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
             </AccordionItem>
           </Accordion>
         </div>
-        
+
         <div className="mt-6 flex flex-col gap-2">
           <Button onClick={applyFilters}>Apply Filters</Button>
-          <Button variant="outline" onClick={resetFilters}>Reset</Button>
+          <Button variant="outline" onClick={resetFilters}>
+            Reset
+          </Button>
         </div>
       </motion.div>
     </>

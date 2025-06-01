@@ -14,34 +14,37 @@ import useSWR from "swr";
 export default function ExplorePage() {
   const searchParams = useSearchParams();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
+
   // Get filter params from URL
   const page = parseInt(searchParams.get("page") || "1");
   const search = searchParams.get("search") || "";
   const genres = searchParams.get("genres")?.split(",") || [];
   const season = searchParams.get("season") || "";
-  const year = searchParams.get("year") ? parseInt(searchParams.get("year") as string) : undefined;
+  const year = searchParams.get("year")
+    ? parseInt(searchParams.get("year") as string)
+    : undefined;
   const format = searchParams.get("format") || "";
   const status = searchParams.get("status") || "";
   const sort = searchParams.get("sort") || "POPULARITY_DESC";
 
   // Fetch genres
   const { data: genreData, error: genreError } = useSWR("genres", fetchGenres);
-  
+
   // Fetch anime with filters
   const { data, error, isLoading } = useSWR(
     ["animeList", page, search, genres, season, year, format, status, sort],
-    () => fetchAnimeList({
-      page,
-      perPage: 25,
-      search: search || undefined,
-      season: season || undefined,
-      seasonYear: year,
-      format: format || undefined,
-      status: status || undefined,
-      genres: genres.length > 0 ? genres : undefined,
-      sort: sort,
-    })
+    () =>
+      fetchAnimeList({
+        page,
+        perPage: 25,
+        search: search || undefined,
+        season: season || undefined,
+        seasonYear: year,
+        format: format || undefined,
+        status: status || undefined,
+        genres: genres.length > 0 ? genres : undefined,
+        sort: sort,
+      })
   );
 
   // Get active filter count
@@ -60,15 +63,15 @@ export default function ExplorePage() {
   const activeFilterCount = getActiveFilterCount();
 
   return (
-    <div className="container py-8">
+    <div className="container mx-auto px-4 py-8">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8 flex items-center justify-between"
       >
         <h1 className="text-3xl font-bold tracking-tight">Explore Anime</h1>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => setIsFilterOpen(true)}
           className="flex items-center gap-1.5"
         >
@@ -82,13 +85,15 @@ export default function ExplorePage() {
         </Button>
       </motion.div>
 
-      <div className="grid gap-8 md:grid-cols-[250px_1fr]">
-        {/* Sidebar - Fixed on desktop, slide out on mobile */}
-        <FilterSidebar
-          genres={genreData || []}
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-        />
+      <div className="grid gap-8 ">
+        <div className="flex md:min-w-[250px]">
+          {/* Sidebar - Fixed on desktop, slide out on mobile */}
+          <FilterSidebar
+            genres={genreData || []}
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+          />
+        </div>
 
         {/* Main Content */}
         <div>
@@ -100,11 +105,11 @@ export default function ExplorePage() {
             </div>
           ) : (
             <>
-              <AnimeGrid 
-                animeList={data?.Page?.media || []} 
-                isLoading={isLoading} 
+              <AnimeGrid
+                animeList={data?.Page?.media || []}
+                isLoading={isLoading}
               />
-              
+
               {data?.Page?.pageInfo && (
                 <Pagination
                   totalPages={data.Page.pageInfo.lastPage}

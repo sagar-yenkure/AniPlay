@@ -21,7 +21,7 @@ export function ThemeToggle() {
         animate={{ opacity: 1, rotate: 0 }}
         exit={{ opacity: 0, rotate: 90 }}
         transition={{ duration: 0.2 }}
-        className="relative h-full w-full"
+        className="relative h-full w-full mt-5"
       >
         {theme === "light" ? (
           <Moon className="h-[1.2rem] w-[1.2rem]" />

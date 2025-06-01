@@ -7,8 +7,6 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchAnimeDetails } from "@/lib/anilist";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import {
   Calendar,
@@ -23,13 +21,11 @@ import {
 export default function AnimeDetailsPage() {
   const { id } = useParams();
   const animeId = parseInt(id as string);
-  
-  const { data, error, isLoading } = useSWR(
-    ["animeDetails", animeId],
-    () => fetchAnimeDetails(animeId)
+
+  const { data, error, isLoading } = useSWR(["animeDetails", animeId], () =>
+    fetchAnimeDetails(animeId)
   );
 
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -77,7 +73,7 @@ export default function AnimeDetailsPage() {
 
   const anime = data.Media;
   const title = anime.title.english || anime.title.romaji || "Unknown Title";
-  
+
   // Format dates
   const formatDate = (year?: number, month?: number, day?: number) => {
     if (!year) return "Unknown";
@@ -93,18 +89,19 @@ export default function AnimeDetailsPage() {
     anime.startDate?.month,
     anime.startDate?.day
   );
-  
-  const endDate = anime.status === "FINISHED"
-    ? formatDate(
-        anime.endDate?.year,
-        anime.endDate?.month,
-        anime.endDate?.day
-      )
-    : anime.status === "RELEASING"
+
+  const endDate =
+    anime.status === "FINISHED"
+      ? formatDate(
+          anime.endDate?.year,
+          anime.endDate?.month,
+          anime.endDate?.day
+        )
+      : anime.status === "RELEASING"
       ? "Ongoing"
       : anime.status === "NOT_YET_RELEASED"
-        ? "TBA"
-        : "Unknown";
+      ? "TBA"
+      : "Unknown";
 
   // Format status
   const formatStatus = (status: string) => {
@@ -127,7 +124,7 @@ export default function AnimeDetailsPage() {
       <div className="min-h-screen">
         {/* Banner Image */}
         {anime.bannerImage && (
-          <motion.div 
+          <motion.div
             className="relative h-[200px] w-full md:h-[300px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -143,7 +140,8 @@ export default function AnimeDetailsPage() {
             <div
               className="absolute inset-0"
               style={{
-                background: "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%)"
+                background:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%)",
               }}
             />
           </motion.div>
@@ -181,75 +179,88 @@ export default function AnimeDetailsPage() {
                   {anime.averageScore && (
                     <div className="flex flex-col items-center justify-center rounded-md border border-border/50 bg-background p-2">
                       <Star className="mb-1 h-5 w-5 text-yellow-500" />
-                      <span className="text-sm text-muted-foreground">Score</span>
-                      <span className="text-base font-semibold">{anime.averageScore}%</span>
+                      <span className="text-sm text-muted-foreground">
+                        Score
+                      </span>
+                      <span className="text-base font-semibold">
+                        {anime.averageScore}%
+                      </span>
                     </div>
                   )}
-                  
+
                   {anime.popularity && (
                     <div className="flex flex-col items-center justify-center rounded-md border border-border/50 bg-background p-2">
                       <TrendingUp className="mb-1 h-5 w-5 text-green-500" />
-                      <span className="text-sm text-muted-foreground">Popularity</span>
-                      <span className="text-base font-semibold">{anime.popularity.toLocaleString()}</span>
+                      <span className="text-sm text-muted-foreground">
+                        Popularity
+                      </span>
+                      <span className="text-base font-semibold">
+                        {anime.popularity.toLocaleString()}
+                      </span>
                     </div>
                   )}
                 </div>
-                
+
                 <div className="space-y-2">
                   {anime.format && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Format</span>
-                      <span className="font-medium">{formatAnimeType(anime.format)}</span>
+                      <span className="font-medium">
+                        {formatAnimeType(anime.format)}
+                      </span>
                     </div>
                   )}
-                  
+
                   {anime.episodes && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Episodes</span>
                       <span className="font-medium">{anime.episodes}</span>
                     </div>
                   )}
-                  
+
                   {anime.duration && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Duration</span>
                       <span className="font-medium">{anime.duration} min</span>
                     </div>
                   )}
-                  
+
                   {anime.status && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Status</span>
-                      <span className="font-medium">{formatStatus(anime.status)}</span>
+                      <span className="font-medium">
+                        {formatStatus(anime.status)}
+                      </span>
                     </div>
                   )}
-                  
+
                   {anime.season && anime.seasonYear && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Season</span>
                       <span className="font-medium">
-                        {anime.season.charAt(0) + anime.season.slice(1).toLowerCase()} {anime.seasonYear}
+                        {anime.season.charAt(0) +
+                          anime.season.slice(1).toLowerCase()}{" "}
+                        {anime.seasonYear}
                       </span>
                     </div>
                   )}
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Aired</span>
                     <span className="font-medium text-right">
                       {startDate}
-                      {anime.status !== "NOT_YET_RELEASED" && endDate !== startDate && (
-                        <> to {endDate}</>
-                      )}
+                      {anime.status !== "NOT_YET_RELEASED" &&
+                        endDate !== startDate && <> to {endDate}</>}
                     </span>
                   </div>
-                  
+
                   {anime.studios?.nodes?.length > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Studio</span>
                       <span className="font-medium">
                         {anime.studios.nodes
-                          .filter(studio => studio.isAnimationStudio)
-                          .map(studio => studio.name)
+                          .filter((studio) => studio.isAnimationStudio)
+                          .map((studio) => studio.name)
                           .join(", ")}
                       </span>
                     </div>
@@ -269,7 +280,7 @@ export default function AnimeDetailsPage() {
                 <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl">
                   {title}
                 </h1>
-                
+
                 {anime.title.native && (
                   <p className="text-lg text-muted-foreground">
                     {anime.title.native}
@@ -337,9 +348,12 @@ export default function AnimeDetailsPage() {
                           />
                         </div>
                         <div className="mt-2 text-center">
-                          <p className="line-clamp-1 font-medium">{character.name.full}</p>
+                          <p className="line-clamp-1 font-medium">
+                            {character.name.full}
+                          </p>
                           <p className="text-xs text-muted-foreground">
-                            {character.role.charAt(0) + character.role.slice(1).toLowerCase()}
+                            {character.role.charAt(0) +
+                              character.role.slice(1).toLowerCase()}
                           </p>
                         </div>
                       </motion.div>
@@ -357,7 +371,11 @@ export default function AnimeDetailsPage() {
                       .sort((a, b) => b.rank - a.rank)
                       .slice(0, 12)
                       .map((tag) => (
-                        <Badge key={tag.id} variant="outline" className="text-xs">
+                        <Badge
+                          key={tag.id}
+                          variant="outline"
+                          className="text-xs"
+                        >
                           {tag.name}
                         </Badge>
                       ))}

@@ -1,4 +1,4 @@
-import { ANILIST_URL } from './constants';
+import { ANILIST_URL } from "./constants";
 
 const MAX_RETRIES = 5;
 const INITIAL_RETRY_DELAY_MS = 2000;
@@ -106,7 +106,7 @@ const defaultOptions: FilterOptions = {
 };
 
 async function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function executeFetchWithRetry<T>(
@@ -117,9 +117,12 @@ async function executeFetchWithRetry<T>(
   try {
     return await operation();
   } catch (error) {
-    if (error instanceof Error && 
-        (error.message === 'Too Many Requests' || error.message.includes('rate limit')) && 
-        retries > 0) {
+    if (
+      error instanceof Error &&
+      (error.message === "Too Many Requests" ||
+        error.message.includes("rate limit")) &&
+      retries > 0
+    ) {
       await sleep(delay);
       return executeFetchWithRetry(operation, retries - 1, delay * 2);
     }
@@ -129,26 +132,30 @@ async function executeFetchWithRetry<T>(
 
 async function handleApiResponse(response: Response): Promise<any> {
   if (response.status === 429) {
-    throw new Error('Too Many Requests');
+    throw new Error("Too Many Requests");
   }
 
   const json = await response.json();
-  
+
   if (json.errors) {
     const errorMessage = json.errors[0].message;
-    if (errorMessage.toLowerCase().includes('rate limit') || 
-        errorMessage.toLowerCase().includes('too many requests')) {
-      throw new Error('Too Many Requests');
+    if (
+      errorMessage.toLowerCase().includes("rate limit") ||
+      errorMessage.toLowerCase().includes("too many requests")
+    ) {
+      throw new Error("Too Many Requests");
     }
     throw new Error(errorMessage);
   }
-  
+
   return json.data;
 }
 
-export async function fetchAnimeList(options: FilterOptions = {}): Promise<AnimeListResponse> {
+export async function fetchAnimeList(
+  options: FilterOptions = {}
+): Promise<AnimeListResponse> {
   const mergedOptions = { ...defaultOptions, ...options };
-  
+
   const query = `
     query ($page: Int, $perPage: Int, $search: String, $season: MediaSeason, $seasonYear: Int, $format: MediaFormat, $status: MediaStatus, $genres: [String], $sort: [MediaSort]) {
       Page(page: $page, perPage: $perPage) {
@@ -209,14 +216,14 @@ export async function fetchAnimeList(options: FilterOptions = {}): Promise<Anime
     format: mergedOptions.format,
     status: mergedOptions.status,
     genres: mergedOptions.genres,
-    sort: mergedOptions.sort ? [mergedOptions.sort] : ['POPULARITY_DESC'],
+    sort: mergedOptions.sort ? [mergedOptions.sort] : ["POPULARITY_DESC"],
   };
 
   return executeFetchWithRetry(async () => {
     const response = await fetch(ANILIST_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         query,
@@ -305,9 +312,9 @@ export async function fetchAnimeDetails(id: number): Promise<AnimeResponse> {
 
   return executeFetchWithRetry(async () => {
     const response = await fetch(ANILIST_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         query,
@@ -322,15 +329,15 @@ export async function fetchAnimeDetails(id: number): Promise<AnimeResponse> {
 export async function fetchGenres(): Promise<string[]> {
   const query = `
     query {
-      GenreCollection
+      genres
     }
   `;
 
   return executeFetchWithRetry(async () => {
     const response = await fetch(ANILIST_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ query }),
     });
@@ -343,34 +350,34 @@ export async function fetchUpcomingAnime(): Promise<AnimeListResponse> {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   let currentSeason;
-  
+
   const month = currentDate.getMonth() + 1;
-  
+
   if (month >= 1 && month <= 3) {
-    currentSeason = 'WINTER';
+    currentSeason = "WINTER";
   } else if (month >= 4 && month <= 6) {
-    currentSeason = 'SPRING';
+    currentSeason = "SPRING";
   } else if (month >= 7 && month <= 9) {
-    currentSeason = 'SUMMER';
+    currentSeason = "SUMMER";
   } else {
-    currentSeason = 'FALL';
+    currentSeason = "FALL";
   }
 
   let nextSeason;
   let nextSeasonYear = currentYear;
-  
+
   switch (currentSeason) {
-    case 'WINTER':
-      nextSeason = 'SPRING';
+    case "WINTER":
+      nextSeason = "SPRING";
       break;
-    case 'SPRING':
-      nextSeason = 'SUMMER';
+    case "SPRING":
+      nextSeason = "SUMMER";
       break;
-    case 'SUMMER':
-      nextSeason = 'FALL';
+    case "SUMMER":
+      nextSeason = "FALL";
       break;
-    case 'FALL':
-      nextSeason = 'WINTER';
+    case "FALL":
+      nextSeason = "WINTER";
       nextSeasonYear = currentYear + 1;
       break;
   }
@@ -378,8 +385,8 @@ export async function fetchUpcomingAnime(): Promise<AnimeListResponse> {
   return fetchAnimeList({
     season: nextSeason,
     seasonYear: nextSeasonYear,
-    status: 'NOT_YET_RELEASED',
-    sort: 'POPULARITY_DESC',
+    status: "NOT_YET_RELEASED",
+    sort: "POPULARITY_DESC",
     perPage: 20,
   });
 }

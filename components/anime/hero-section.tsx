@@ -12,30 +12,21 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ anime }: HeroSectionProps) {
-  const title = anime.title.english || anime.title.romaji || "";
+  const title = anime?.title?.english || anime?.title?.romaji || "";
 
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0 z-0">
-        {anime.bannerImage ? (
-          <Image
-            src={anime.bannerImage}
-            alt={title}
-            fill
-            priority
-            className="object-cover object-center"
-          />
-        ) : anime.coverImage.extraLarge ? (
-          <Image
-            src={anime.coverImage.extraLarge}
-            alt={title}
-            fill
-            priority
-            className="object-cover object-center"
-          />
-        ) : null}
-
+        <Image
+          src={anime?.bannerImage || anime.coverImage.extraLarge}
+          alt={title}
+          fill
+          priority
+          quality={100}
+          unoptimized
+          className="object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
       </div>
 
@@ -47,14 +38,15 @@ export function HeroSection({ anime }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="mx-auto w-40 sm:w-52 md:w-60 aspect-[2/3] overflow-hidden rounded-lg shadow-2xl"
+            className="mx-auto hidden md:block w-40 md:w-64 aspect-[2/3] overflow-hidden rounded-lg shadow-2xl"
           >
             <Image
               src={anime.coverImage.large}
               alt={title}
-              width={300}
+              width={450}
               height={450}
               priority
+              quality={100}
               className="h-full w-full object-cover"
             />
           </motion.div>
