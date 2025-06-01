@@ -8,41 +8,44 @@ import { fetchUpcomingAnime } from "@/lib/anilist";
 import { AnimeGrid } from "@/components/anime/anime-grid";
 
 export default function UpcomingPage() {
-  const { data, error, isLoading } = useSWR("upcoming-anime", fetchUpcomingAnime);
-  
+  const { data, error, isLoading } = useSWR(
+    "upcoming-anime",
+    fetchUpcomingAnime
+  );
+
   // Get current season and next season for display
   const getCurrentAndNextSeason = () => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     let currentSeason;
-    
+
     const month = currentDate.getMonth() + 1;
-    
+
     if (month >= 1 && month <= 3) {
-      currentSeason = 'Winter';
+      currentSeason = "Winter";
     } else if (month >= 4 && month <= 6) {
-      currentSeason = 'Spring';
+      currentSeason = "Spring";
     } else if (month >= 7 && month <= 9) {
-      currentSeason = 'Summer';
+      currentSeason = "Summer";
     } else {
-      currentSeason = 'Fall';
+      currentSeason = "Fall";
     }
 
     let nextSeason;
     let nextSeasonYear = currentYear;
-    
+
     switch (currentSeason) {
-      case 'Winter':
-        nextSeason = 'Spring';
+      case "Winter":
+        nextSeason = "Spring";
         break;
-      case 'Spring':
-        nextSeason = 'Summer';
+      case "Spring":
+        nextSeason = "Summer";
         break;
-      case 'Summer':
-        nextSeason = 'Fall';
+      case "Summer":
+        nextSeason = "Fall";
         break;
-      case 'Fall':
-        nextSeason = 'Winter';
+      case "Fall":
+        nextSeason = "Winter";
         nextSeasonYear = currentYear + 1;
         break;
     }
@@ -56,8 +59,8 @@ export default function UpcomingPage() {
   const seasons = getCurrentAndNextSeason();
 
   return (
-    <div className="container py-8">
-      <motion.div 
+    <div className="container py-8 px-4">
+      <motion.div
         className="mb-8"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -66,7 +69,7 @@ export default function UpcomingPage() {
           <CalendarDays className="h-6 w-6 text-primary" />
           <h1 className="text-3xl font-bold tracking-tight">Upcoming Anime</h1>
         </div>
-        
+
         <p className="mt-2 text-muted-foreground">
           Discover upcoming anime releases for the {seasons.next} season
         </p>
@@ -79,10 +82,7 @@ export default function UpcomingPage() {
           </p>
         </div>
       ) : (
-        <AnimeGrid 
-          animeList={data?.Page?.media || []} 
-          isLoading={isLoading} 
-        />
+        <AnimeGrid animeList={data?.Page?.media || []} isLoading={isLoading} />
       )}
     </div>
   );

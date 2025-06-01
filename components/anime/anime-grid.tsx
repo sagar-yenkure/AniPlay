@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { Anime } from "@/lib/anilist";
 import { AnimeCard } from "@/components/anime/anime-card";
 import { motion, AnimatePresence } from "framer-motion";
+import Error from "../layout/Error";
+import CardSkeleton from "../layout/CardSkeleton";
 
 interface AnimeGridProps {
   animeList: Anime[];
@@ -26,35 +28,13 @@ const item = {
 };
 
 export function AnimeGrid({ animeList, isLoading = false }: AnimeGridProps) {
-  // Use useEffect to scroll to top when animeList changes (filter/sort/pagination)
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [animeList]);
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lx:grid-cols-5">
-        {Array.from({ length: 20 }).map((_, index) => (
-          <div key={index} className="animate-pulse">
-            <div className="aspect-[2/3] w-full rounded-lg bg-muted"></div>
-            <div className="mt-2 h-4 w-3/4 rounded bg-muted"></div>
-            <div className="mt-2 h-3 w-1/2 rounded bg-muted"></div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  if (isLoading) return <CardSkeleton number={10} />;
 
-  if (!animeList || animeList.length === 0) {
-    return (
-      <div className="flex min-h-[300px] w-full flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
-        <p className="text-muted-foreground">No anime found.</p>
-        <p className="text-sm text-muted-foreground">
-          Try adjusting your filters or search query.
-        </p>
-      </div>
-    );
-  }
+  if (animeList?.length === 0) return <Error error="No anime found" />;
 
   return (
     <AnimatePresence mode="wait">
