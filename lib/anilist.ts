@@ -388,5 +388,6 @@ export async function fetchUpcomingAnime(): Promise<AnimeListResponse> {
     status: "NOT_YET_RELEASED",
     sort: "POPULARITY_DESC",
     perPage: 20,
+    
   });
 }
