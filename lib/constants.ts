@@ -1,4 +1,5 @@
 export const ANILIST_URL = 'https://graphql.anilist.co';
+export const revalidate = 3600;
 
 export const SEASONS = [
   { value: 'WINTER', label: 'Winter' },
@@ -35,3 +36,4 @@ export const YEAR_RANGE = Array.from(
   { length: new Date().getFullYear() - 1939 + 1 },
   (_, i) => ({ value: (new Date().getFullYear() - i).toString(), label: (new Date().getFullYear() - i).toString() })
 );
+

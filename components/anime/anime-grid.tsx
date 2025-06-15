@@ -39,7 +39,7 @@ export function AnimeGrid({ animeList, isLoading = false }: AnimeGridProps) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        className="grid grid-cols-2 gap-4 md:grid-cols-4"
+        className="grid grid-cols-2 gap-4 md:grid-cols-5"
         variants={container}
         initial="hidden"
         animate="show"

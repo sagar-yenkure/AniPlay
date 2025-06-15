@@ -10,6 +10,7 @@ import { FilterSidebar } from "@/components/anime/filter-sidebar";
 import { fetchAnimeList, fetchGenres } from "@/lib/anilist";
 import { motion } from "framer-motion";
 import useSWR from "swr";
+import Error from "@/components/layout/Error";
 
 export default function ExplorePage() {
   const searchParams = useSearchParams();
@@ -27,7 +28,6 @@ export default function ExplorePage() {
   const status = searchParams.get("status") || "";
   const sort = searchParams.get("sort") || "POPULARITY_DESC";
 
-  // Fetch genres
   const { data: genreData, error: genreError } = useSWR("genres", fetchGenres);
 
   // Fetch anime with filters
@@ -60,6 +60,8 @@ export default function ExplorePage() {
     return count;
   };
 
+  if (error) return <Error error="Error loading anime. Please try again later." />;
+
   const activeFilterCount = getActiveFilterCount();
 
   return (
@@ -87,7 +89,6 @@ export default function ExplorePage() {
 
       <div className="grid gap-8 ">
         <div className="flex md:min-w-[250px]">
-          {/* Sidebar - Fixed on desktop, slide out on mobile */}
           <FilterSidebar
             genres={genreData || []}
             isOpen={isFilterOpen}
@@ -95,28 +96,16 @@ export default function ExplorePage() {
           />
         </div>
 
-        {/* Main Content */}
         <div>
-          {error ? (
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center">
-              <p className="text-destructive">
-                Error loading anime. Please try again later.
-              </p>
-            </div>
-          ) : (
-            <>
-              <AnimeGrid
-                animeList={data?.Page?.media || []}
-                isLoading={isLoading}
-              />
-
-              {data?.Page?.pageInfo && (
-                <Pagination
-                  totalPages={data.Page.pageInfo.lastPage}
-                  currentPage={page}
-                />
-              )}
-            </>
+          <AnimeGrid
+            animeList={data?.Page?.media || []}
+            isLoading={isLoading}
+          />
+          {data?.Page?.pageInfo && (
+            <Pagination
+              totalPages={data.Page.pageInfo.lastPage}
+              currentPage={page}
+            />
           )}
         </div>
       </div>

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { CalendarDays } from "lucide-react";
 import { fetchUpcomingAnime } from "@/lib/anilist";
 import { AnimeGrid } from "@/components/anime/anime-grid";
+import Error from "@/components/layout/Error";
 
 export default function UpcomingPage() {
   const { data, error, isLoading } = useSWR(
@@ -56,10 +57,11 @@ export default function UpcomingPage() {
     };
   };
 
+  if (error) return <Error error="Error loading upcoming anime. Please try again later." />;
   const seasons = getCurrentAndNextSeason();
 
   return (
-    <div className="container py-8 px-4">
+    <div className="container py-8 px-4 md:px-4">
       <motion.div
         className="mb-8"
         initial={{ opacity: 0, y: -10 }}
@@ -75,15 +77,8 @@ export default function UpcomingPage() {
         </p>
       </motion.div>
 
-      {error ? (
-        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center">
-          <p className="text-destructive">
-            Error loading upcoming anime. Please try again later.
-          </p>
-        </div>
-      ) : (
-        <AnimeGrid animeList={data?.Page?.media || []} isLoading={isLoading} />
-      )}
+      <AnimeGrid animeList={data?.Page?.media || []} isLoading={isLoading} />
+
     </div>
   );
 }

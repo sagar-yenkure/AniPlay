@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, X, Filter, ChevronDown, Check } from "lucide-react";
+import { Search, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,12 +19,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
   SEASONS,
@@ -45,57 +39,52 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Initialize filters from URL parameters
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("search") || ""
   );
   const [selectedGenres, setSelectedGenres] = useState<string[]>(
     searchParams.get("genres")?.split(",") || []
   );
-  const [season, setSeason] = useState(searchParams.get("season") || "");
-  const [year, setYear] = useState(searchParams.get("year") || "");
-  const [format, setFormat] = useState(searchParams.get("format") || "");
-  const [status, setStatus] = useState(searchParams.get("status") || "");
+  const [season, setSeason] = useState(searchParams.get("season") || "any");
+  const [year, setYear] = useState(searchParams.get("year") || "any");
+  const [format, setFormat] = useState(searchParams.get("format") || "any");
+  const [status, setStatus] = useState(searchParams.get("status") || "any");
   const [sort, setSort] = useState(
     searchParams.get("sort") || "POPULARITY_DESC"
   );
 
-  // Handle genre selection
   const handleGenreChange = (genre: string) => {
     setSelectedGenres((prev) =>
       prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
     );
   };
 
-  // Handle filter submit
   const applyFilters = () => {
     const params = new URLSearchParams();
 
     if (searchQuery) params.append("search", searchQuery);
     if (selectedGenres.length > 0)
       params.append("genres", selectedGenres.join(","));
-    if (season) params.append("season", season);
-    if (year) params.append("year", year);
-    if (format) params.append("format", format);
-    if (status) params.append("status", status);
+    if (season !== "any") params.append("season", season);
+    if (year !== "any") params.append("year", year);
+    if (format !== "any") params.append("format", format);
+    if (status !== "any") params.append("status", status);
     if (sort) params.append("sort", sort);
 
     router.push(`/explore?${params.toString()}`);
     onClose();
   };
 
-  // Handle filter reset
   const resetFilters = () => {
     setSearchQuery("");
     setSelectedGenres([]);
-    setSeason("");
-    setYear("");
-    setFormat("");
-    setStatus("");
+    setSeason("any");
+    setYear("any");
+    setFormat("any");
+    setStatus("any");
     setSort("POPULARITY_DESC");
   };
 
-  // Effect to handle click outside to close on desktop
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.getElementById("filter-sidebar");
@@ -121,7 +110,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
 
   return (
     <>
-      {/* Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
@@ -129,7 +117,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
         />
       )}
 
-      {/* Sidebar */}
       <motion.div
         id="filter-sidebar"
         className={cn(
@@ -153,7 +140,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
         </div>
 
         <div className="mt-12 space-y-4">
-          {/* Search */}
           <div>
             <Label htmlFor="search">Search</Label>
             <div className="relative mt-1">
@@ -169,7 +155,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
             </div>
           </div>
 
-          {/* Sort */}
           <div>
             <Label htmlFor="sort">Sort By</Label>
             <Select value={sort} onValueChange={setSort}>
@@ -187,7 +172,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
           </div>
 
           <Accordion type="single" collapsible className="w-full">
-            {/* Season & Year */}
             <AccordionItem value="season">
               <AccordionTrigger>Season</AccordionTrigger>
               <AccordionContent className="space-y-2">
@@ -196,7 +180,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                     <SelectValue placeholder="Select season" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any Season</SelectItem>
+                    <SelectItem value="any">Any Season</SelectItem>
                     {SEASONS.map((season) => (
                       <SelectItem key={season.value} value={season.value}>
                         {season.label}
@@ -210,7 +194,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                     <SelectValue placeholder="Select year" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any Year</SelectItem>
+                    <SelectItem value="any">Any Year</SelectItem>
                     {YEAR_RANGE.map((year) => (
                       <SelectItem key={year.value} value={year.value}>
                         {year.label}
@@ -221,7 +205,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
               </AccordionContent>
             </AccordionItem>
 
-            {/* Format */}
             <AccordionItem value="format">
               <AccordionTrigger>Format</AccordionTrigger>
               <AccordionContent>
@@ -230,7 +213,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                     <SelectValue placeholder="Select format" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any Format</SelectItem>
+                    <SelectItem value="any">Any Format</SelectItem>
                     {FORMATS.map((format) => (
                       <SelectItem key={format.value} value={format.value}>
                         {format.label}
@@ -241,7 +224,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
               </AccordionContent>
             </AccordionItem>
 
-            {/* Status */}
             <AccordionItem value="status">
               <AccordionTrigger>Status</AccordionTrigger>
               <AccordionContent>
@@ -250,7 +232,7 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any Status</SelectItem>
+                    <SelectItem value="any">Any Status</SelectItem>
                     {STATUSES.map((status) => (
                       <SelectItem key={status.value} value={status.value}>
                         {status.label}
@@ -261,7 +243,6 @@ export function FilterSidebar({ genres, isOpen, onClose }: FilterSidebarProps) {
               </AccordionContent>
             </AccordionItem>
 
-            {/* Genres */}
             <AccordionItem value="genres">
               <AccordionTrigger>Genres</AccordionTrigger>
               <AccordionContent>

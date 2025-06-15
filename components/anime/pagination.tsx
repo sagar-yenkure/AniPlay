@@ -77,7 +77,7 @@ export function Pagination({ totalPages, currentPage, onPageChange }: Pagination
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="icon"

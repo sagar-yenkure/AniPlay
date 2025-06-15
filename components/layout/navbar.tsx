@@ -80,7 +80,7 @@ export function Navbar() {
         </nav>
 
         {/* Right Section */}
-        <div className="flex items-center gap-4 justify-center">
+        <div className="flex items-center gap-2 md:gap-4 justify-center">
           <form
             onSubmit={handleSearch}
             className="relative hidden md:flex items-center"
@@ -119,12 +119,12 @@ export function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-50 bg-background pt-16"
+            className="fixed inset-0 z-50 bg-black"
             role="dialog"
             aria-modal="true"
           >
-            <div className="container py-6 space-y-6">
-              <div className="flex justify-end">
+            <div className="container space-y-6 h-screen bg-black px-6 py-2">
+              <div className="flex justify-end py-3">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -150,7 +150,7 @@ export function Navbar() {
 
               {/* Mobile Navigation */}
               <nav
-                className="flex flex-col space-y-6"
+                className="flex flex-col space-y-6 bg-black"
                 aria-label="Mobile navigation"
               >
                 {navItems.map((item) => {

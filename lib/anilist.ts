@@ -279,7 +279,7 @@ export async function fetchAnimeDetails(id: number): Promise<AnimeResponse> {
             isAnimationStudio
           }
         }
-        characters(sort: ROLE, page: 1, perPage: 8) {
+        characters( page: 1, perPage: 8) {
           nodes {
             id
             name {
@@ -290,7 +290,7 @@ export async function fetchAnimeDetails(id: number): Promise<AnimeResponse> {
             }
             gender
             description
-            role
+          
           }
         }
         trailer {
