@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimeGrid } from "@/components/anime/anime-grid";
-import { Anime } from "@/lib/anilist";
+import { Anime } from "@/types/animeTypes";
 import { motion } from "framer-motion";
 
 interface AnimeSectionProps {
@@ -23,7 +23,7 @@ export function AnimeSection({
   return (
     <section className="container py-8">
       <div className="flex items-center justify-between mb-6">
-        <motion.h2 
+        <motion.h2
           className="text-2xl font-bold tracking-tight"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -31,7 +31,7 @@ export function AnimeSection({
         >
           {title}
         </motion.h2>
-        
+
         {viewAllLink && (
           <Link href={viewAllLink} passHref>
             <Button variant="outline" className="group">
@@ -41,7 +41,7 @@ export function AnimeSection({
           </Link>
         )}
       </div>
-      
+
       <AnimeGrid animeList={animeList} isLoading={isLoading} />
     </section>
   );

@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { Anime } from "@/types/animeTypes";
 
 interface AnimeBannerProps {
-    anime: any;
+    anime: Anime;
 }
 
 const AnimeBanner = ({ anime }: AnimeBannerProps) => {

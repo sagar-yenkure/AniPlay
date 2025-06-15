@@ -1,61 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
 import { CalendarDays } from "lucide-react";
 import { fetchUpcomingAnime } from "@/lib/anilist";
 import { AnimeGrid } from "@/components/anime/anime-grid";
 import Error from "@/components/layout/Error";
+import { getCurrentAndNextSeason } from "@/helpers/animeHelper";
 
 export default function UpcomingPage() {
   const { data, error, isLoading } = useSWR(
     "upcoming-anime",
     fetchUpcomingAnime
   );
-
-  // Get current season and next season for display
-  const getCurrentAndNextSeason = () => {
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    let currentSeason;
-
-    const month = currentDate.getMonth() + 1;
-
-    if (month >= 1 && month <= 3) {
-      currentSeason = "Winter";
-    } else if (month >= 4 && month <= 6) {
-      currentSeason = "Spring";
-    } else if (month >= 7 && month <= 9) {
-      currentSeason = "Summer";
-    } else {
-      currentSeason = "Fall";
-    }
-
-    let nextSeason;
-    let nextSeasonYear = currentYear;
-
-    switch (currentSeason) {
-      case "Winter":
-        nextSeason = "Spring";
-        break;
-      case "Spring":
-        nextSeason = "Summer";
-        break;
-      case "Summer":
-        nextSeason = "Fall";
-        break;
-      case "Fall":
-        nextSeason = "Winter";
-        nextSeasonYear = currentYear + 1;
-        break;
-    }
-
-    return {
-      current: `${currentSeason} ${currentYear}`,
-      next: `${nextSeason} ${nextSeasonYear}`,
-    };
-  };
 
   if (error) return <Error error="Error loading upcoming anime. Please try again later." />;
   const seasons = getCurrentAndNextSeason();

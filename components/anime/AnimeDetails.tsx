@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { Anime } from "@/types/animeTypes";
 
 interface AnimeDetailsProps {
-    anime: any;
+    anime: Anime;
 }
 
 const AnimeDetails = ({ anime }: AnimeDetailsProps) => {

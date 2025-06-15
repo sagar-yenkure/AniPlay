@@ -44,3 +44,45 @@ export const formatStatus = (status: string) => {
             return status;
     }
 };
+
+export const getCurrentAndNextSeason = () => {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    let currentSeason;
+
+    const month = currentDate.getMonth() + 1;
+
+    if (month >= 1 && month <= 3) {
+        currentSeason = "Winter";
+    } else if (month >= 4 && month <= 6) {
+        currentSeason = "Spring";
+    } else if (month >= 7 && month <= 9) {
+        currentSeason = "Summer";
+    } else {
+        currentSeason = "Fall";
+    }
+
+    let nextSeason;
+    let nextSeasonYear = currentYear;
+
+    switch (currentSeason) {
+        case "Winter":
+            nextSeason = "Spring";
+            break;
+        case "Spring":
+            nextSeason = "Summer";
+            break;
+        case "Summer":
+            nextSeason = "Fall";
+            break;
+        case "Fall":
+            nextSeason = "Winter";
+            nextSeasonYear = currentYear + 1;
+            break;
+    }
+
+    return {
+        current: `${currentSeason} ${currentYear}`,
+        next: `${nextSeason} ${nextSeasonYear}`,
+    };
+};

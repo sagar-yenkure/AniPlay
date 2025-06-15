@@ -29,6 +29,7 @@ const AnimeDetailsPage = () => {
   if (error) return <Error error="Error loading anime details. Please try again later." />;
 
   const anime = data.Media;
+  console.log("Anime Details:", anime);
 
   return (
     <AnimatePresence>

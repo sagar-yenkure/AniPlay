@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { Anime } from "@/lib/anilist";
+
 import { AnimeCard } from "@/components/anime/anime-card";
 import { motion, AnimatePresence } from "framer-motion";
 import Error from "../layout/Error";
 import CardSkeleton from "../layout/CardSkeleton";
+import { Anime } from "@/types/animeTypes";
 
 interface AnimeGridProps {
   animeList: Anime[];

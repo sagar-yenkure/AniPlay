@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Anime } from "@/lib/anilist";
+import { Anime } from "@/types/animeTypes";
 
 interface HeroSectionProps {
   anime: Anime;
