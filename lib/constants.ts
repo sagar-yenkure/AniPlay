@@ -1,4 +1,8 @@
-export const ANILIST_URL = 'https://graphql.anilist.co';
+
+if (!process.env.NEXT_PUBLIC_ANILIST_URL)
+  throw new Error("ANILIST_URL is not defined. Please set it in your environment variables.");
+
+export const ANILIST_URL = process.env.NEXT_PUBLIC_ANILIST_URL;
 export const revalidate = 3600;
 
 export const SEASONS = [
